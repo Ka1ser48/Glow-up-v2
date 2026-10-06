@@ -1,0 +1,700 @@
+<!DOCTYPE html>
+<html lang="ru" class="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>GlowUp Hub — Прокачай себя</title>
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Lucide Icons -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          colors: {
+            brand: {
+              50: '#f0fdf4',
+              100: '#dcfce7',
+              500: '#22c55e',
+              600: '#16a34a',
+              700: '#15803d',
+              900: '#14532d'
+            }
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    ::-webkit-scrollbar { width: 8px; }
+    ::-webkit-scrollbar-track { background: #0f172a; }
+    ::-webkit-scrollbar-thumb { background: #334155; border-radius: 4px; }
+    ::-webkit-scrollbar-thumb:hover { background: #475569; }
+  </style>
+</head>
+<body class="bg-slate-950 text-slate-100 min-h-screen flex flex-col font-sans antialiased selection:bg-brand-500 selection:text-slate-950">
+
+  <!-- Навигация / Шапка -->
+  <header class="sticky top-0 z-40 bg-slate-900/80 backdrop-blur-md border-b border-slate-800">
+    <div class="max-w-6xl mx-auto px-4 h-16 flex items-center justify-between">
+      <div class="flex items-center gap-3 cursor-pointer" onclick="switchTab('profile')">
+        <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-brand-500 to-emerald-700 flex items-center justify-center font-bold text-slate-950 text-xl shadow-lg shadow-brand-500/20">
+          ✨
+        </div>
+        <div>
+          <span class="font-extrabold text-lg tracking-tight bg-gradient-to-r from-white via-slate-200 to-brand-500 bg-clip-text text-transparent">GlowUp Hub</span>
+          <span class="block text-[10px] text-slate-400 font-medium -mt-1">Level Up Your Life</span>
+        </div>
+      </div>
+
+      <!-- Переключатель вкладок (Desktop) -->
+      <nav class="hidden md:flex items-center gap-1 bg-slate-950/60 p-1.5 rounded-xl border border-slate-800/80">
+        <button onclick="switchTab('profile')" id="nav-profile" class="nav-btn px-4 py-2 rounded-lg text-sm font-medium transition-all flex items-center gap-2">
+          <i data-lucide="user" class="w-4 h-4"></i> Профиль
+        </button>
+        <button onclick="switchTab('body')" id="nav-body" class="nav-btn px-4 py-2 rounded-lg text-sm font-medium transition-all flex items-center gap-2">
+          <i data-lucide="dumbbell" class="w-4 h-4"></i> Body
+        </button>
+        <button onclick="switchTab('mind')" id="nav-mind" class="nav-btn px-4 py-2 rounded-lg text-sm font-medium transition-all flex items-center gap-2">
+          <i data-lucide="brain" class="w-4 h-4"></i> Mind
+        </button>
+        <button onclick="switchTab('focus')" id="nav-focus" class="nav-btn px-4 py-2 rounded-lg text-sm font-medium transition-all flex items-center gap-2">
+          <i data-lucide="target" class="w-4 h-4"></i> Focus
+        </button>
+        <button onclick="switchTab('style')" id="nav-style" class="nav-btn px-4 py-2 rounded-lg text-sm font-medium transition-all flex items-center gap-2">
+          <i data-lucide="sparkles" class="w-4 h-4"></i> Style
+        </button>
+      </nav>
+
+      <!-- Быстрый статус -->
+      <div class="flex items-center gap-3">
+        <div class="bg-slate-800/80 px-3 py-1.5 rounded-lg border border-slate-700/60 flex items-center gap-2 text-xs font-semibold">
+          <span class="text-amber-400 flex items-center gap-1">⚡ <span id="header-streak">1</span> дн</span>
+          <span class="text-slate-500">|</span>
+          <span class="text-brand-500 flex items-center gap-1">💎 <span id="header-xp">0</span> XP</span>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- Главный контент -->
+  <main class="flex-1 max-w-6xl w-full mx-auto p-4 md:p-6 mb-20 md:mb-8">
+    
+    <!-- 1. ВКЛАДКА: ПРОФИЛЬ -->
+    <section id="tab-profile" class="tab-content space-y-6">
+      
+      <!-- Карточка прогресса уровней -->
+      <div class="relative overflow-hidden rounded-3xl bg-gradient-to-br from-slate-900 via-slate-900 to-slate-950 border border-slate-800 p-6 md:p-8 shadow-2xl">
+        <div class="relative z-10 grid grid-cols-1 md:grid-cols-3 gap-6 items-center">
+          
+          <div class="flex items-center gap-5">
+            <div class="relative">
+              <div class="w-20 h-20 md:w-24 md:h-24 rounded-2xl bg-gradient-to-tr from-brand-600 via-emerald-500 to-teal-400 p-1 shadow-xl shadow-brand-500/20">
+                <div class="w-full h-full bg-slate-900 rounded-[14px] flex flex-col items-center justify-center">
+                  <span class="text-2xl md:text-3xl font-black text-brand-500" id="user-level-num">1</span>
+                  <span class="text-[10px] uppercase font-bold text-slate-400 tracking-wider">Уровень</span>
+                </div>
+              </div>
+              <span class="absolute -bottom-2 -right-2 bg-amber-500 text-slate-950 text-[10px] font-black px-2 py-0.5 rounded-full shadow-md" id="user-rank-badge">Ранг I</span>
+            </div>
+            <div>
+              <div class="flex items-center gap-2">
+                <h1 class="text-xl md:text-2xl font-bold text-white" id="user-title">Novice</h1>
+                <button onclick="openLevelsModal()" class="text-xs text-slate-400 hover:text-brand-500 underline transition-colors">карта уровней</button>
+              </div>
+              <p class="text-xs text-slate-400 mt-1" id="user-rank-title">Начало пути</p>
+              <div class="mt-2 flex items-center gap-2 text-xs text-slate-300">
+                <span class="inline-flex items-center gap-1 bg-slate-800/80 px-2.5 py-1 rounded-md border border-slate-700/50">
+                  🔥 Серия: <strong class="text-amber-400" id="profile-streak">1 дней</strong>
+                </span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Прогресс XP -->
+          <div class="md:col-span-2 space-y-3 bg-slate-950/40 p-4 rounded-2xl border border-slate-800/50">
+            <div class="flex justify-between items-end text-sm">
+              <div>
+                <span class="text-slate-400 text-xs block">Прогресс до следующего уровня</span>
+                <span class="font-bold text-white text-base"><span id="user-current-xp">0</span> / <span id="user-next-xp">100</span> XP</span>
+              </div>
+              <span class="text-xs font-semibold text-brand-500 bg-brand-500/10 px-2.5 py-1 rounded-full" id="xp-percentage">0%</span>
+            </div>
+            
+            <div class="w-full h-4 bg-slate-800 rounded-full overflow-hidden p-0.5 border border-slate-700/50 relative">
+              <div id="xp-progress-bar" class="h-full bg-gradient-to-r from-brand-600 via-brand-500 to-emerald-400 rounded-full transition-all duration-500 ease-out" style="width: 0%"></div>
+            </div>
+
+            <div class="flex justify-between items-center text-[11px] text-slate-400 pt-1">
+              <span>До ур. <span id="next-level-num">2</span> осталось: <strong class="text-slate-200" id="xp-needed">100 XP</strong></span>
+              <span>Всего заработано: <strong class="text-brand-400" id="total-xp-earned">0 XP</strong></span>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- Раздел квестов -->
+      <div class="space-y-4">
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+          <div>
+            <h2 class="text-xl font-bold flex items-center gap-2 text-white">
+              <i data-lucide="check-circle-2" class="w-6 h-6 text-brand-500"></i> Ежедневные Квесты
+            </h2>
+            <p class="text-xs text-slate-400">Выполняй задания каждый день, чтобы зарабатывать XP и прокачивать Level</p>
+          </div>
+          
+          <div class="flex flex-wrap gap-1.5 bg-slate-900 p-1 rounded-xl border border-slate-800 text-xs">
+            <button onclick="filterQuests('all')" class="quest-filter-btn px-3 py-1.5 rounded-lg font-medium transition-all bg-brand-500 text-slate-950 font-semibold" data-category="all">Все</button>
+            <button onclick="filterQuests('body')" class="quest-filter-btn px-3 py-1.5 rounded-lg font-medium text-slate-400 hover:text-white transition-all" data-category="body">Body</button>
+            <button onclick="filterQuests('mind')" class="quest-filter-btn px-3 py-1.5 rounded-lg font-medium text-slate-400 hover:text-white transition-all" data-category="mind">Mind</button>
+            <button onclick="filterQuests('focus')" class="quest-filter-btn px-3 py-1.5 rounded-lg font-medium text-slate-400 hover:text-white transition-all" data-category="focus">Focus</button>
+            <button onclick="filterQuests('style')" class="quest-filter-btn px-3 py-1.5 rounded-lg font-medium text-slate-400 hover:text-white transition-all" data-category="style">Style</button>
+          </div>
+        </div>
+
+        <div id="quests-container" class="grid grid-cols-1 md:grid-cols-2 gap-3.5">
+          <!-- Генерируется из JS -->
+        </div>
+      </div>
+
+    </section>
+
+    <!-- 2. ВКЛАДКА: BODY -->
+    <section id="tab-body" class="tab-content hidden space-y-6">
+      <div class="bg-slate-900 border border-slate-800 rounded-3xl p-6 md:p-8">
+        <div class="flex items-center gap-3 text-emerald-400 mb-2">
+          <i data-lucide="dumbbell" class="w-8 h-8"></i>
+          <span class="text-xs font-bold uppercase tracking-wider bg-emerald-500/10 px-3 py-1 rounded-full border border-emerald-500/20">Раздел 1: Физическая Форма</span>
+        </div>
+        <h1 class="text-2xl md:text-3xl font-extrabold text-white">Тело, Осанка и Энергия</h1>
+        <p class="text-slate-400 text-sm mt-2 max-w-2xl">
+          Твое тело — это фундамент. От осанки зависит уверенность в себе, а от базовой активности — уровень энергии в учебе и повседневной жизни.
+        </p>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div class="bg-slate-900/60 border border-slate-800 rounded-2xl p-5 space-y-3">
+          <div class="flex items-center justify-between">
+            <span class="text-xs font-bold text-emerald-400 bg-emerald-500/10 px-2.5 py-1 rounded-md">Осанка & Спина</span>
+            <span class="text-xs text-slate-500">5 минут в день</span>
+          </div>
+          <h3 class="text-lg font-bold text-white">Разминка для ровной спины</h3>
+          <p class="text-xs text-slate-300 leading-relaxed">Сидение за партой и телефоном сутулит плечи. Делай эти 3 простых упражнения каждый день:</p>
+          <ul class="text-xs text-slate-300 space-y-2 list-disc list-inside bg-slate-950/50 p-3 rounded-xl border border-slate-800">
+            <li><strong>Кошка-собака:</strong> 10 медленных прогибов стоя на четвереньках.</li>
+            <li><strong>Ангелы у стены:</strong> Прижмись спиной и затылком к стене, подними руки под 90° и двигай вверх-вниз 15 раз.</li>
+            <li><strong>Гиперэкстензия на полу:</strong> Лежа на животе, поднимай грудь на 2 секунды (12 повторений).</li>
+          </ul>
+        </div>
+
+        <div class="bg-slate-900/60 border border-slate-800 rounded-2xl p-5 space-y-3">
+          <div class="flex items-center justify-between">
+            <span class="text-xs font-bold text-blue-400 bg-blue-500/10 px-2.5 py-1 rounded-md">Гидратация</span>
+            <span class="text-xs text-slate-500">1.5 - 2 литра</span>
+          </div>
+          <h3 class="text-lg font-bold text-white">Водный Баланс</h3>
+          <p class="text-xs text-slate-300 leading-relaxed">Обезвоживание — главная причина утомляемости, тумана в голове и проблем с кожей.</p>
+          <div class="bg-slate-950/50 p-3 rounded-xl border border-slate-800 text-xs space-y-2 text-slate-300">
+            <p>💡 <strong>Лайфхак:</strong> Выпивай 1 стакан чистой воды сразу после пробуждения. Это запускает метаболизм и бодрит лучше кофе.</p>
+            <p>Носи с собой в школу удобную бутылку для воды и делай пару глотков на каждой перемене.</p>
+          </div>
+        </div>
+
+        <div class="bg-slate-900/60 border border-slate-800 rounded-2xl p-5 space-y-3">
+          <div class="flex items-center justify-between">
+            <span class="text-xs font-bold text-purple-400 bg-purple-500/10 px-2.5 py-1 rounded-md">Силовая база</span>
+            <span class="text-xs text-slate-500">Без инвентаря</span>
+          </div>
+          <h3 class="text-lg font-bold text-white">Короткий домашний комплекс</h3>
+          <p class="text-xs text-slate-300 leading-relaxed">Тебе не нужен дорогой абонемент в зал. 12 минут работы со своим весом 3-4 раза в неделю дадут отличный рельеф.</p>
+          <div class="bg-slate-950/50 p-3 rounded-xl border border-slate-800 text-xs space-y-1.5 text-slate-300">
+            <div class="flex justify-between"><span>Отжимания (обычные/с колен):</span><strong>3 подх. x 10-15</strong></div>
+            <div class="flex justify-between"><span>Приседания:</span><strong>3 подх. x 20</strong></div>
+            <div class="flex justify-between"><span>Планка:</span><strong>3 подх. x 45 сек</strong></div>
+          </div>
+        </div>
+
+        <div class="bg-slate-900/60 border border-slate-800 rounded-2xl p-5 space-y-3">
+          <div class="flex items-center justify-between">
+            <span class="text-xs font-bold text-amber-400 bg-amber-500/10 px-2.5 py-1 rounded-md">Тонус & Закаливание</span>
+            <span class="text-xs text-slate-500">Утренний бодряк</span>
+          </div>
+          <h3 class="text-lg font-bold text-white">Контрастный душ</h3>
+          <p class="text-xs text-slate-300 leading-relaxed">Улучшает кровообращение, укрепляет иммунитет и тренирует нервную систему стойко переносить стресс.</p>
+          <p class="text-xs text-slate-400 bg-slate-950/50 p-3 rounded-xl border border-slate-800">
+            Начни с обычного теплого душа, а в конце включи прохладную воду на 30 секунд. Постепенно доводи время до 1-2 минут.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <!-- 3. ВКЛАДКА: MIND -->
+    <section id="tab-mind" class="tab-content hidden space-y-6">
+      <div class="bg-slate-900 border border-slate-800 rounded-3xl p-6 md:p-8">
+        <div class="flex items-center gap-3 text-purple-400 mb-2">
+          <i data-lucide="brain" class="w-8 h-8"></i>
+          <span class="text-xs font-bold uppercase tracking-wider bg-purple-500/10 px-3 py-1 rounded-full border border-purple-500/20">Раздел 2: Ментальное Здоровье</span>
+        </div>
+        <h1 class="text-2xl md:text-3xl font-extrabold text-white">Разум, Сон и Внутреннее Спокойствие</h1>
+        <p class="text-slate-400 text-sm mt-2 max-w-2xl">
+          Настоящий Glow Up происходит изнутри. Наведи порядок в мыслях, выстрой режим сна и научись справляться с тревогой.
+        </p>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div class="bg-slate-900/60 border border-slate-800 rounded-2xl p-5 space-y-3">
+          <span class="text-xs font-bold text-indigo-400 bg-indigo-500/10 px-2.5 py-1 rounded-md">Качество Сна</span>
+          <h3 class="text-lg font-bold text-white">Гигиена Сна и Циркадные Ритмы</h3>
+          <p class="text-xs text-slate-300 leading-relaxed">Без хорошего сна (8-9 часов) мозг теряет фокус, а организм — способность к восстановлению.</p>
+          <ul class="text-xs text-slate-300 space-y-2 list-disc list-inside bg-slate-950/50 p-3 rounded-xl border border-slate-800">
+            <li><strong>Правило 45 минут:</strong> Отложи телефон за 45 минут до сна. Синий свет блокирует мелатонин.</li>
+            <li><strong>Темнота и прохлада:</strong> Проветривай комнату перед сном (+18...+20°C — идеальная температура).</li>
+          </ul>
+        </div>
+
+        <div class="bg-slate-900/60 border border-slate-800 rounded-2xl p-5 space-y-3">
+          <span class="text-xs font-bold text-rose-400 bg-rose-500/10 px-2.5 py-1 rounded-md">Борьба со стрессом</span>
+          <h3 class="text-lg font-bold text-white">Техника Brain Dump (Выгрузка Мыслей)</h3>
+          <p class="text-xs text-slate-300 leading-relaxed">Если перед сном крутятся тревожные мысли о школе, экзаменах или отношениях — выпиши их.</p>
+          <div class="bg-slate-950/50 p-3 rounded-xl border border-slate-800 text-xs text-slate-300 space-y-1">
+            <p>📝 Возьми тетрадь и напиши всё, что беспокоит. Перенос мыслей на бумагу снижает уровень тревоги на 60%.</p>
+          </div>
+        </div>
+
+        <div class="bg-slate-900/60 border border-slate-800 rounded-2xl p-5 space-y-3">
+          <span class="text-xs font-bold text-amber-400 bg-amber-500/10 px-2.5 py-1 rounded-md">Язык Тела</span>
+          <h3 class="text-lg font-bold text-white">Уверенный Взгляд и Осанка</h3>
+          <p class="text-xs text-slate-300 leading-relaxed">Мозг считывает положение твоего тела. Ходишь с опущенной головой — чувствуешь неуверенность.</p>
+          <div class="bg-slate-950/50 p-3 rounded-xl border border-slate-800 text-xs text-slate-300 space-y-1.5">
+            <p>👁️ Держи подбородок параллельно полу при ходьбе.</p>
+            <p>При разговоре удерживай зрительный контакт 3-4 секунды, не опускай глаза сразу вниз.</p>
+          </div>
+        </div>
+
+        <div class="bg-slate-900/60 border border-slate-800 rounded-2xl p-5 space-y-3">
+          <span class="text-xs font-bold text-teal-400 bg-teal-500/10 px-2.5 py-1 rounded-md">Цифровой Баланс</span>
+          <h3 class="text-lg font-bold text-white">Digital Detox на 1 час</h3>
+          <p class="text-xs text-slate-300 leading-relaxed">Бесконечный скроллинг TikTok и соцсетей перегружает дофаминовую систему и убивает концентрацию.</p>
+          <p class="text-xs text-slate-400 bg-slate-950/50 p-3 rounded-xl border border-slate-800">
+            Выдели 1 час в день (например, во время прогулки или спорт-разминки), когда телефон лежит на режиме «Не беспокоить».
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <!-- 4. ВКЛАДКА: FOCUS -->
+    <section id="tab-focus" class="tab-content hidden space-y-6">
+      <div class="bg-slate-900 border border-slate-800 rounded-3xl p-6 md:p-8">
+        <div class="flex items-center gap-3 text-blue-400 mb-2">
+          <i data-lucide="target" class="w-8 h-8"></i>
+          <span class="text-xs font-bold uppercase tracking-wider bg-blue-500/10 px-3 py-1 rounded-full border border-blue-500/20">Раздел 3: Учеба и Навыки</span>
+        </div>
+        <h1 class="text-2xl md:text-3xl font-extrabold text-white">Фокус, Тайм-Менеджмент и Интеллект</h1>
+        <p class="text-slate-400 text-sm mt-2 max-w-2xl">Учись умнее, а не дольше. Используй эффективные техники фокуса и качай логическое мышление.</p>
+      </div>
+
+      <!-- Pomodoro Таймер -->
+      <div class="bg-slate-900 border border-slate-800 rounded-3xl p-6 md:p-8 text-center space-y-4">
+        <div class="inline-flex items-center gap-2 bg-blue-500/10 text-blue-400 px-3 py-1 rounded-full text-xs font-bold border border-blue-500/20">
+          ⏱️ Встроенный Инструмент: Pomodoro Таймер
+        </div>
+        <h2 class="text-xl font-bold text-white">Сфокусируйся на учебе</h2>
+        <div class="text-5xl md:text-6xl font-black tracking-tight text-brand-500 font-mono py-2" id="timer-display">25:00</div>
+        <div class="flex justify-center items-center gap-3">
+          <button onclick="startTimer()" id="btn-timer-start" class="bg-brand-500 hover:bg-brand-600 text-slate-950 font-bold px-6 py-2.5 rounded-xl transition-all shadow-lg shadow-brand-500/20 flex items-center gap-2 text-sm">
+            <i data-lucide="play" class="w-4 h-4"></i> Старт
+          </button>
+          <button onclick="pauseTimer()" id="btn-timer-pause" class="bg-slate-800 hover:bg-slate-700 text-white font-bold px-5 py-2.5 rounded-xl transition-all border border-slate-700 text-sm hidden">Пауза</button>
+          <button onclick="resetTimer(25)" class="bg-slate-800 hover:bg-slate-700 text-slate-300 px-4 py-2.5 rounded-xl transition-all border border-slate-700 text-sm">25 мин</button>
+          <button onclick="resetTimer(5)" class="bg-slate-800 hover:bg-slate-700 text-slate-300 px-4 py-2.5 rounded-xl transition-all border border-slate-700 text-sm">5 мин (Отдых)</button>
+        </div>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div class="bg-slate-900/60 border border-slate-800 rounded-2xl p-5 space-y-3">
+          <span class="text-xs font-bold text-blue-400 bg-blue-500/10 px-2.5 py-1 rounded-md">Методика обучения</span>
+          <h3 class="text-lg font-bold text-white">Техника Фейнмана</h3>
+          <p class="text-xs text-slate-300 leading-relaxed">Лучший способ понять сложную тему (по физике, математике или языкам) — попробовать объяснить ее простыми словами 10-летнему ребенку.</p>
+          <p class="text-xs text-slate-400 bg-slate-950/50 p-3 rounded-xl border border-slate-800">
+            Если ты запинаешься или используешь сложные термины — значит, в этом месте у тебя пробел. Вернись к конспекту.
+          </p>
+        </div>
+
+        <div class="bg-slate-900/60 border border-slate-800 rounded-2xl p-5 space-y-3">
+          <span class="text-xs font-bold text-emerald-400 bg-emerald-500/10 px-2.5 py-1 rounded-md">Тренажер ума</span>
+          <h3 class="text-lg font-bold text-white">Интеллектуальная Зарядка</h3>
+          <p class="text-xs text-slate-300 leading-relaxed">Мозг — это мышца. 15 минут задач в день дают огромный буст сообразительности.</p>
+          <ul class="text-xs text-slate-300 space-y-1.5 list-disc list-inside bg-slate-950/50 p-3 rounded-xl border border-slate-800">
+            <li>Реши 3-5 тактических задач в шахматах.</li>
+            <li>Выучи 5 новых иностранных слов.</li>
+            <li>Прочитай 15 страниц нон-фикшн книги.</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <!-- 5. ВКЛАДКА: STYLE -->
+    <section id="tab-style" class="tab-content hidden space-y-6">
+      <div class="bg-slate-900 border border-slate-800 rounded-3xl p-6 md:p-8">
+        <div class="flex items-center gap-3 text-amber-400 mb-2">
+          <i data-lucide="sparkles" class="w-8 h-8"></i>
+          <span class="text-xs font-bold uppercase tracking-wider bg-amber-500/10 px-3 py-1 rounded-full border border-amber-500/20">Раздел 4: Внешний Вид</span>
+        </div>
+        <h1 class="text-2xl md:text-3xl font-extrabold text-white">Стиль, Уход за Кожей и Опрятность</h1>
+        <p class="text-slate-400 text-sm mt-2 max-w-2xl">Опрятный внешний вид дает +100 к уверенности в себе при общении со сверстниками.</p>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div class="bg-slate-900/60 border border-slate-800 rounded-2xl p-5 space-y-3">
+          <span class="text-xs font-bold text-amber-400 bg-amber-500/10 px-2.5 py-1 rounded-md">Skincare / Уход</span>
+          <h3 class="text-lg font-bold text-white">Базовый Уход за Кожей Лица</h3>
+          <p class="text-xs text-slate-300 leading-relaxed">В подростковом возрасте гормоны часто вызывают высыпания. Достаточно 2 базовых средств:</p>
+          <ul class="text-xs text-slate-300 space-y-2 list-disc list-inside bg-slate-950/50 p-3 rounded-xl border border-slate-800">
+            <li><strong>Мягкая пенка/гель для умывания:</strong> смывает себум и пыль (утром и вечером).</li>
+            <li><strong>Легкий увлажняющий крем:</strong> предотвращает шелушение и защищает барьер кожи.</li>
+          </ul>
+        </div>
+
+        <div class="bg-slate-900/60 border border-slate-800 rounded-2xl p-5 space-y-3">
+          <span class="text-xs font-bold text-blue-400 bg-blue-500/10 px-2.5 py-1 rounded-md">Гардероб</span>
+          <h3 class="text-lg font-bold text-white">Базовый Гардероб и Обувь</h3>
+          <p class="text-xs text-slate-300 leading-relaxed">Чтобы выглядеть стильно, не нужны дорогие бренды. Главное — посадка и чистые вещи.</p>
+          <div class="bg-slate-950/50 p-3 rounded-xl border border-slate-800 text-xs text-slate-300 space-y-1.5">
+            <p>👟 <strong>Обувь:</strong> Протирай кроссовки сразу после возвращения с улицы. Чистая обувь моментально преображает лук.</p>
+            <p>👕 <strong>Цвета:</strong> Черный, белый, серый, бежевый и темно-синий всегда отлично сочетаются.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- Модалка: Карта 25 уровней -->
+  <div id="levels-modal" class="fixed inset-0 bg-slate-950/80 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
+    <div class="bg-slate-900 border border-slate-800 rounded-3xl max-w-2xl w-full max-h-[85vh] flex flex-col shadow-2xl overflow-hidden">
+      <div class="p-6 border-b border-slate-800 flex justify-between items-center">
+        <div>
+          <h3 class="text-xl font-bold text-white">Карта 25 Уровней Glow Up</h3>
+          <p class="text-xs text-slate-400">Градация рангов и требуемый XP</p>
+        </div>
+        <button onclick="closeLevelsModal()" class="text-slate-400 hover:text-white p-2 rounded-lg bg-slate-800">✕</button>
+      </div>
+      <div class="p-6 overflow-y-auto space-y-3" id="modal-levels-list"></div>
+    </div>
+  </div>
+
+  <!-- Нижняя мобильная навигация -->
+  <nav class="md:hidden fixed bottom-0 left-0 right-0 bg-slate-900/95 backdrop-blur-md border-t border-slate-800 z-40 px-2 py-2 flex justify-around">
+    <button onclick="switchTab('profile')" id="mob-nav-profile" class="mob-btn flex flex-col items-center gap-1 p-2 rounded-xl text-slate-400 text-[10px]">
+      <i data-lucide="user" class="w-5 h-5"></i> Профиль
+    </button>
+    <button onclick="switchTab('body')" id="mob-nav-body" class="mob-btn flex flex-col items-center gap-1 p-2 rounded-xl text-slate-400 text-[10px]">
+      <i data-lucide="dumbbell" class="w-5 h-5"></i> Body
+    </button>
+    <button onclick="switchTab('mind')" id="mob-nav-mind" class="mob-btn flex flex-col items-center gap-1 p-2 rounded-xl text-slate-400 text-[10px]">
+      <i data-lucide="brain" class="w-5 h-5"></i> Mind
+    </button>
+    <button onclick="switchTab('focus')" id="mob-nav-focus" class="mob-btn flex flex-col items-center gap-1 p-2 rounded-xl text-slate-400 text-[10px]">
+      <i data-lucide="target" class="w-5 h-5"></i> Focus
+    </button>
+    <button onclick="switchTab('style')" id="mob-nav-style" class="mob-btn flex flex-col items-center gap-1 p-2 rounded-xl text-slate-400 text-[10px]">
+      <i data-lucide="sparkles" class="w-5 h-5"></i> Style
+    </button>
+  </nav>
+
+  <!-- Скрипты приложения -->
+  <script>
+    const LEVELS = [
+      { level: 1, title: "Novice", rank: "Ранг I", rankTitle: "Начало пути", xp: 0 },
+      { level: 2, title: "Starter", rank: "Ранг I", rankTitle: "Начало пути", xp: 100 },
+      { level: 3, title: "Explorer", rank: "Ранг I", rankTitle: "Начало пути", xp: 250 },
+      { level: 4, title: "Spark", rank: "Ранг I", rankTitle: "Начало пути", xp: 450 },
+      { level: 5, title: "Awakened", rank: "Ранг I", rankTitle: "Начало пути", xp: 700 },
+      { level: 6, title: "Runner", rank: "Ранг II", rankTitle: "Формирование привычек", xp: 1000 },
+      { level: 7, title: "Momentum", rank: "Ранг II", rankTitle: "Формирование привычек", xp: 1350 },
+      { level: 8, title: "Builder", rank: "Ранг II", rankTitle: "Формирование привычек", xp: 1750 },
+      { level: 9, title: "Focused", rank: "Ранг II", rankTitle: "Формирование привычек", xp: 2200 },
+      { level: 10, title: "Self-Made", rank: "Ранг II", rankTitle: "Формирование привычек", xp: 2700 },
+      { level: 11, title: "Iron Will", rank: "Ранг III", rankTitle: "Заметный прогресс", xp: 3300 },
+      { level: 12, title: "Disciplined", rank: "Ранг III", rankTitle: "Заметный прогресс", xp: 4000 },
+      { level: 13, title: "High Performer", rank: "Ранг III", rankTitle: "Заметный прогресс", xp: 4800 },
+      { level: 14, title: "Pathfinder", rank: "Ранг III", rankTitle: "Заметный прогресс", xp: 5700 },
+      { level: 15, title: "Transformer", rank: "Ранг III", rankTitle: "Заметный прогресс", xp: 6700 },
+      { level: 16, title: "Prime", rank: "Ранг IV", rankTitle: "Уверенный результат", xp: 7800 },
+      { level: 17, title: "Peak Form", rank: "Ранг IV", rankTitle: "Уверенный результат", xp: 9000 },
+      { level: 18, title: "Unstoppable", rank: "Ранг IV", rankTitle: "Уверенный результат", xp: 10300 },
+      { level: 19, title: "Vanguard", rank: "Ранг IV", rankTitle: "Уверенный результат", xp: 11700 },
+      { level: 20, title: "Glow Up Pro", rank: "Ранг IV", rankTitle: "Уверенный результат", xp: 13200 },
+      { level: 21, title: "Elite", rank: "Ранг V", rankTitle: "Легенда дисциплины", xp: 15000 },
+      { level: 22, title: "Dominant", rank: "Ранг V", rankTitle: "Легенда дисциплины", xp: 17000 },
+      { level: 23, title: "Icon", rank: "Ранг V", rankTitle: "Легенда дисциплины", xp: 19200 },
+      { level: 24, title: "Mastermind", rank: "Ранг V", rankTitle: "Легенда дисциплины", xp: 21600 },
+      { level: 25, title: "Glow Up Legend", rank: "Ранг V", rankTitle: "Легенда дисциплины", xp: 25000 }
+    ];
+
+    const INITIAL_QUESTS = [
+      { id: 'q1', category: 'body', title: '5 минут разминки для осанки', desc: 'Упражнения "кошка-собака" и ангелы у стены', xp: 25 },
+      { id: 'q2', category: 'body', title: 'Выпить 1.5 - 2л воды за день', desc: 'Стакан воды утром + бутылка с собой', xp: 15 },
+      { id: 'q3', category: 'mind', title: 'Отложить телефон за 45 мин до сна', desc: 'Замени скроллинг ленты на чтение', xp: 30 },
+      { id: 'q4', category: 'mind', title: 'Практика ровной осанки при ходьбе', desc: 'Держи подбородок параллельно полу', xp: 15 },
+      { id: 'q5', category: 'focus', title: '25 минут учебы по Pomodoro без телефона', desc: 'Полный фокус на одной задаче', xp: 25 },
+      { id: 'q6', category: 'focus', title: 'Прочитать 15 страниц книги', desc: 'Художественная книга или нон-фикшн', xp: 20 },
+      { id: 'q7', category: 'style', title: 'Вечерний уход за кожей лица', desc: 'Умывание пенкой + увлажнение', xp: 15 },
+      { id: 'q8', category: 'style', title: 'Протереть обувь и собрать вещи с вечера', desc: 'Чистые кроссовки + готовый лук', xp: 15 }
+    ];
+
+    let state = {
+      xp: 0,
+      streak: 1,
+      completedQuests: {}
+    };
+
+    function loadState() {
+      const saved = localStorage.getItem('glowup_state');
+      if (saved) {
+        try { state = JSON.parse(saved); } catch(e) {}
+      }
+      updateUI();
+    }
+
+    function saveState() {
+      localStorage.setItem('glowup_state', JSON.stringify(state));
+      updateUI();
+    }
+
+    function getCurrentLevelData(xp) {
+      let current = LEVELS[0];
+      let next = LEVELS[1];
+      for (let i = LEVELS.length - 1; i >= 0; i--) {
+        if (xp >= LEVELS[i].xp) {
+          current = LEVELS[i];
+          next = LEVELS[i + 1] || LEVELS[i];
+          break;
+        }
+      }
+      return { current, next };
+    }
+
+    function updateUI() {
+      const { current, next } = getCurrentLevelData(state.xp);
+      
+      document.getElementById('header-xp').textContent = state.xp;
+      document.getElementById('header-streak').textContent = state.streak;
+
+      document.getElementById('user-level-num').textContent = current.level;
+      document.getElementById('user-title').textContent = current.title;
+      document.getElementById('user-rank-badge').textContent = current.rank;
+      document.getElementById('user-rank-title').textContent = current.rankTitle;
+      document.getElementById('profile-streak').textContent = `${state.streak} дней`;
+
+      document.getElementById('user-current-xp').textContent = state.xp;
+      document.getElementById('user-next-xp').textContent = next.xp;
+      document.getElementById('next-level-num').textContent = next.level;
+      document.getElementById('total-xp-earned').textContent = `${state.xp} XP`;
+
+      let progressPercent = 100;
+      let xpNeeded = 0;
+
+      if (current.level !== next.level) {
+        const range = next.xp - current.xp;
+        const earnedInRange = state.xp - current.xp;
+        progressPercent = Math.min(100, Math.max(0, Math.round((earnedInRange / range) * 100)));
+        xpNeeded = next.xp - state.xp;
+      }
+
+      document.getElementById('xp-percentage').textContent = `${progressPercent}%`;
+      document.getElementById('xp-progress-bar').style.width = `${progressPercent}%`;
+      document.getElementById('xp-needed').textContent = `${xpNeeded} XP`;
+
+      renderQuests();
+    }
+
+    let currentCategoryFilter = 'all';
+
+    function renderQuests() {
+      const container = document.getElementById('quests-container');
+      if (!container) return;
+      container.innerHTML = '';
+
+      const filtered = INITIAL_QUESTS.filter(q => currentCategoryFilter === 'all' || q.category === currentCategoryFilter);
+
+      filtered.forEach(quest => {
+        const isDone = !!state.completedQuests[quest.id];
+        
+        const card = document.createElement('div');
+        card.className = `p-4 rounded-2xl border transition-all flex items-start justify-between gap-3 ${
+          isDone 
+            ? 'bg-emerald-950/20 border-emerald-500/30 text-slate-400' 
+            : 'bg-slate-900/80 border-slate-800 hover:border-slate-700 text-white'
+        }`;
+
+        card.innerHTML = `
+          <div class="flex items-start gap-3.5">
+            <button onclick="toggleQuest('${quest.id}', ${quest.xp})" class="mt-0.5 w-6 h-6 rounded-lg border flex items-center justify-center transition-all ${
+              isDone ? 'bg-brand-500 border-brand-500 text-slate-950 font-bold' : 'border-slate-700 hover:border-brand-500'
+            }">
+              ${isDone ? '✓' : ''}
+            </button>
+            <div>
+              <div class="flex items-center gap-2">
+                <h4 class="text-sm font-bold ${isDone ? 'line-through text-slate-400' : 'text-white'}">${quest.title}</h4>
+                <span class="text-[10px] font-bold px-2 py-0.5 rounded-full ${
+                  quest.category === 'body' ? 'bg-emerald-500/10 text-emerald-400' :
+                  quest.category === 'mind' ? 'bg-purple-500/10 text-purple-400' :
+                  quest.category === 'focus' ? 'bg-blue-500/10 text-blue-400' : 'bg-amber-500/10 text-amber-400'
+                }">${quest.category.toUpperCase()}</span>
+              </div>
+              <p class="text-xs text-slate-400 mt-1">${quest.desc}</p>
+            </div>
+          </div>
+          <span class="text-xs font-bold text-brand-400 bg-brand-500/10 px-2.5 py-1 rounded-lg shrink-0">
+            +${quest.xp} XP
+          </span>
+        `;
+
+        container.appendChild(card);
+      });
+    }
+
+    function toggleQuest(id, xp) {
+      if (state.completedQuests[id]) {
+        delete state.completedQuests[id];
+        state.xp = Math.max(0, state.xp - xp);
+      } else {
+        state.completedQuests[id] = true;
+        state.xp += xp;
+      }
+      saveState();
+    }
+
+    function filterQuests(category) {
+      currentCategoryFilter = category;
+      document.querySelectorAll('.quest-filter-btn').forEach(btn => {
+        if (btn.dataset.category === category) {
+          btn.className = 'quest-filter-btn px-3 py-1.5 rounded-lg font-medium transition-all bg-brand-500 text-slate-950 font-semibold';
+        } else {
+          btn.className = 'quest-filter-btn px-3 py-1.5 rounded-lg font-medium text-slate-400 hover:text-white transition-all';
+        }
+      });
+      renderQuests();
+    }
+
+    function switchTab(tabId) {
+      document.querySelectorAll('.tab-content').forEach(tab => tab.classList.add('hidden'));
+      const target = document.getElementById(`tab-${tabId}`);
+      if (target) target.classList.remove('hidden');
+
+      document.querySelectorAll('.nav-btn').forEach(btn => {
+        btn.classList.remove('bg-brand-500', 'text-slate-950', 'font-bold');
+        btn.classList.add('text-slate-400');
+      });
+      const activeDesktopNav = document.getElementById(`nav-${tabId}`);
+      if (activeDesktopNav) {
+        activeDesktopNav.classList.add('bg-brand-500', 'text-slate-950', 'font-bold');
+        activeDesktopNav.classList.remove('text-slate-400');
+      }
+
+      document.querySelectorAll('.mob-btn').forEach(btn => {
+        btn.classList.remove('text-brand-500', 'font-bold');
+        btn.classList.add('text-slate-400');
+      });
+      const activeMobNav = document.getElementById(`mob-nav-${tabId}`);
+      if (activeMobNav) {
+        activeMobNav.classList.add('text-brand-500', 'font-bold');
+        activeMobNav.classList.remove('text-slate-400');
+      }
+    }
+
+    function openLevelsModal() {
+      const container = document.getElementById('modal-levels-list');
+      if (!container) return;
+      container.innerHTML = '';
+      const currentLevel = getCurrentLevelData(state.xp).current.level;
+
+      LEVELS.forEach(lvl => {
+        const isCurrent = lvl.level === currentLevel;
+        const isReached = state.xp >= lvl.xp;
+
+        const row = document.createElement('div');
+        row.className = `p-3.5 rounded-xl border flex items-center justify-between ${
+          isCurrent 
+            ? 'bg-brand-500/10 border-brand-500 text-white font-bold' 
+            : isReached 
+            ? 'bg-slate-950/60 border-slate-800 text-slate-300' 
+            : 'bg-slate-950/20 border-slate-800/40 text-slate-500'
+        }`;
+
+        row.innerHTML = `
+          <div class="flex items-center gap-3">
+            <span class="w-8 h-8 rounded-lg ${isCurrent ? 'bg-brand-500 text-slate-950' : 'bg-slate-800 text-slate-300'} flex items-center justify-center font-bold text-xs">
+              ${lvl.level}
+            </span>
+            <div>
+              <div class="text-sm font-bold text-white flex items-center gap-2">
+                ${lvl.title} ${isCurrent ? '<span class="text-[10px] bg-brand-500 text-slate-950 px-2 py-0.2 rounded-full">ТЕКУЩИЙ</span>' : ''}
+              </div>
+              <div class="text-[11px] text-slate-400">${lvl.rank} • ${lvl.rankTitle}</div>
+            </div>
+          </div>
+          <span class="text-xs font-mono font-semibold text-slate-400">${lvl.xp} XP</span>
+        `;
+        container.appendChild(row);
+      });
+
+      document.getElementById('levels-modal').classList.remove('hidden');
+    }
+
+    function closeLevelsModal() {
+      document.getElementById('levels-modal').classList.add('hidden');
+    }
+
+    let timerInterval = null;
+    let timerSeconds = 25 * 60;
+
+    function updateTimerDisplay() {
+      const mins = Math.floor(timerSeconds / 60);
+      const secs = timerSeconds % 60;
+      document.getElementById('timer-display').textContent = 
+        `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
+    }
+
+    function startTimer() {
+      if (timerInterval) return;
+      document.getElementById('btn-timer-start').classList.add('hidden');
+      document.getElementById('btn-timer-pause').classList.remove('hidden');
+
+      timerInterval = setInterval(() => {
+        if (timerSeconds > 0) {
+          timerSeconds--;
+          updateTimerDisplay();
+        } else {
+          pauseTimer();
+          alert('⏰ Время вышло! Сделай перерыв.');
+        }
+      }, 1000);
+    }
+
+    function pauseTimer() {
+      clearInterval(timerInterval);
+      timerInterval = null;
+      document.getElementById('btn-timer-start').classList.remove('hidden');
+      document.getElementById('btn-timer-pause').classList.add('hidden');
+    }
+
+    function resetTimer(minutes) {
+      pauseTimer();
+      timerSeconds = minutes * 60;
+      updateTimerDisplay();
+    }
+
+    window.addEventListener('DOMContentLoaded', () => {
+      if (window.lucide) lucide.createIcons();
+      loadState();
+      switchTab('profile');
+    });
+  </script>
+</body>
+</html>
